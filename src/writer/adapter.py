@@ -1,3 +1,4 @@
+import os
 from pydantic import BaseModel, Field, ValidationError
 import asyncpg
 from aiohttp import web
@@ -10,7 +11,10 @@ class Measurement(BaseModel):
 async def init_db(app: web.Application) -> None:
     """Initialize the database connection pool."""
     app['db_pool'] = await asyncpg.create_pool(
-        dsn=app['config']['postgresql://user:password@db:5432/database']
+        dsn=app['config'][f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
+        f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/"
+        f"{os.getenv('DB_NAME')}"
+        ]
     )
 
 async def close_db(app: web.Application) -> None:
