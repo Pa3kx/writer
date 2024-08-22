@@ -4,12 +4,9 @@ ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update
 
-# Copy the project into the image
 ADD . /app
 WORKDIR /app
 
-# Sync the project into a new environment
 RUN uv sync
 
-# Set the command to run your application
 CMD ["uv", "run", "my_app", "temperature", "battery_capacity"]

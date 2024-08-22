@@ -10,7 +10,9 @@ async def db_pool():
     Fixture to set up a connection pool to a test database.
     Ensures isolation for each test by using a transaction or creating/dropping tables as needed.
     """
-    pool = await asyncpg.create_pool(dsn="postgresql://user:password@db:5432/database")
+    #TODO setup env vars and test db
+    pool = await asyncpg.create_pool(dsn="postgresql://user:password@db:5432/test_database")
+
     
     async with pool.acquire() as conn:
         await conn.execute('''
