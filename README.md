@@ -2,7 +2,8 @@
 
 **Writer** is a Python-based service that stores sensor measurements into a PostgreSQL database. It provides an HTTP REST API to write and read sensor measurements, supporting various types of measurements, each represented as a time series.
 
-🚧 **Status**: **Work in Progress**
+🚧 **Status**: Work in Progress
+
 
 
 ## ✨ Features
@@ -16,6 +17,8 @@
 - 🐍 Python 3.12+
 - 🐘 PostgreSQL
 - 🐳 Docker & Docker Compose
+- 🛠️ [uv](https://astral.sh/blog/uv-unified-python-packaging)
+
 
 ## 🚀 Setup
 
@@ -23,4 +26,3 @@
    ```bash
    git clone https://github.com/Pa3kx/writer.git
    cd writer
-   ...
