@@ -1,7 +1,7 @@
 # src/fuergy/main.py
 from aiohttp import web
-from writer.routes import setup_routes
-from writer.adapter import init_db, close_db, init_tables
+from routes import setup_routes
+from adapter import init_db, close_db, init_tables
 
 async def on_startup(app: web.Application) -> None:
     await init_db(app)

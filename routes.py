@@ -1,6 +1,6 @@
 from aiohttp import web
 from pydantic import ValidationError
-from writer.adapter import store_measurements, get_measurements, Measurement
+from adapter import store_measurements, get_measurements, Measurement
 
 accepted_measurement_kinds = []
 
