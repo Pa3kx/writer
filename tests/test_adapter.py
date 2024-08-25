@@ -1,7 +1,7 @@
 import os
 import pytest
 import asyncpg
-from adapter import store_measurements, get_measurements, Measurement
+from writer.adapter import store_measurements, get_measurements, Measurement
 
 @pytest.fixture(scope="session")
 async def db_pool():

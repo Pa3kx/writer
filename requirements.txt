@@ -1,6 +1,5 @@
 aiohttp>=3.10.5
 asyncpg>=0.29.0
-ruff>=0.6.1
 pydantic>=2.8.2
 pytest>=8.3.2
 pytest-aiohttp>=1.0.5

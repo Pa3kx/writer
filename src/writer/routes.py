@@ -1,6 +1,6 @@
 from aiohttp import web
 from pydantic import ValidationError
-from adapter import store_measurements, get_measurements, Measurement
+from writer.adapter import store_measurements, get_measurements, Measurement
 
 async def store_measurements_handler(
     request: web.Request

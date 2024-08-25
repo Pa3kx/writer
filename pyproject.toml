@@ -7,7 +7,6 @@ requires-python = ">=3.12"
 dependencies = [
     "aiohttp>=3.10.5",
     "asyncpg>=0.29.0",
-    "ruff>=0.6.1",
     "pydantic>=2.8.2",
 ]
 
@@ -15,8 +14,8 @@ dependencies = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project.scripts]
-my_app = "src.writer.main:main"
+[tool.hatch.build.targets.wheel]
+packages = ["src/writer"]
 
 [tool.uv]
 dev-dependencies = [
