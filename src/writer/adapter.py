@@ -11,10 +11,9 @@ class Measurement(BaseModel):
 async def init_db(app: web.Application) -> None:
     """Initialize the database connection pool."""
     app['db_pool'] = await asyncpg.create_pool(
-        dsn=app['config'][f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
+        dsn=f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
         f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/"
         f"{os.getenv('DB_NAME')}"
-        ]
     )
 
 async def close_db(app: web.Application) -> None:
@@ -72,6 +71,7 @@ async def get_measurements(
         result: dict[str, list[Measurement]] = {}
 
         for row in rows:
+            row : asyncpg.Record
             measurement = Measurement(
                 kind=row['kind'],
                 time=row['time'], 

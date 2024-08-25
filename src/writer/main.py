@@ -1,7 +1,7 @@
 import os
 import logging
 from aiohttp import web
-from writer.routes import setup_routes, set_accepted_measurement_kinds
+from writer.routes import setup_routes
 from writer.adapter import init_db, close_db, init_tables
 
 logger = logging.getLogger(__name__)
@@ -33,5 +33,4 @@ def create_app(measurement_kinds: list[str]) -> web.Application:
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
     setup_routes(app)
-    set_accepted_measurement_kinds(measurement_kinds)
     return app
