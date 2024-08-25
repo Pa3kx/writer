@@ -7,6 +7,3 @@ RUN apt-get update
 ADD . /app
 WORKDIR /app
 
-RUN uv sync
-
-CMD ["uv", "run", "my_app", "temperature", "battery_capacity"]

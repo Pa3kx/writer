@@ -2,14 +2,18 @@ from aiohttp import web
 from pydantic import ValidationError
 from adapter import store_measurements, get_measurements, Measurement
 
-accepted_measurement_kinds = []
-
 async def store_measurements_handler(
     request: web.Request
 ) -> web.Response:
     kind = request.match_info['kind']
-    if kind not in accepted_measurement_kinds:
-        return web.Response(status=400, text=f"Invalid measurement type {kind}, the valid ones are: {accepted_measurement_kinds}")
+    measurement_kinds = request.app["measurement_kinds"]
+    if kind not in measurement_kinds:
+        return web.json_response(
+            status=400,
+            data={
+                "error": f"Invalid measurement type {kind}", 
+                "valid_types": " ".join(measurement_kinds)}
+        )
     
     try:
         data = await request.json() 
@@ -23,16 +27,16 @@ async def store_measurements_handler(
     except ValidationError as ve:
         return web.json_response(
             status=400,
-            data={"errors": ve.errors()}
+            data={"error": ve.errors()}
         )
     except KeyError as ke:
         return web.json_response(
             status=400,
-            data={"error": f"Missing key in measurement input data: {str(ke)}"}
+            data={"error": f"Missing attribute in measurement input data: {str(ke)}"}
         )
     except Exception:
         return web.json_response(status=500)
-
+    
     await store_measurements(
         request.app['db_pool'], measurements
     )

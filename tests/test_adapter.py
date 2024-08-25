@@ -1,17 +1,23 @@
-# tests/test_adapter.py
-
+import os
 import pytest
 import asyncpg
-from writer.adapter import store_measurements, get_measurements, Measurement
+from adapter import store_measurements, get_measurements, Measurement
 
 @pytest.fixture(scope="session")
 async def db_pool():
     """
     Fixture to set up a connection pool to a test database.
-    Ensures isolation for each test by using a transaction or creating/dropping tables as needed.
     """
-    #TODO setup env vars and test db
-    pool = await asyncpg.create_pool(dsn="postgresql://user:password@db:5432/test_database")
+    # Use environment variables to get the test database connection details
+    db_user = os.getenv("TEST_DB_USER")
+    db_password = os.getenv("TEST_DB_PASSWORD")
+    db_host = os.getenv("TEST_DB_HOST")
+    db_port = os.getenv("TEST_DB_PORT")
+    db_name = os.getenv("TEST_DB_NAME")
+
+    pool = await asyncpg.create_pool(
+        dsn=f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+    )
 
     
     async with pool.acquire() as conn:
