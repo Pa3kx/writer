@@ -1,9 +1,8 @@
 import os
-import pytest
 import pytest_asyncio
 import asyncpg
 from contextlib import asynccontextmanager
-import asyncio
+
 
 # Define an asynchronous context manager for managing the connection pool
 @asynccontextmanager
@@ -19,8 +18,7 @@ async def create_pool():
     pool = await asyncpg.create_pool(
         dsn=f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}",
         min_size=1,
-        max_size=5,
-        loop= asyncio.get_running_loop()
+        max_size=5
     )
     
     try:
@@ -31,7 +29,7 @@ async def create_pool():
         await pool.close()
 
 # Define a pytest fixture for setting up the database before tests
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="function")
 async def db_pool():
     async with create_pool() as pool:
         # Setup database schema
@@ -51,3 +49,4 @@ async def db_pool():
         # Teardown database schema
         async with pool.acquire() as conn:
             await conn.execute("DROP TABLE IF EXISTS measurements")
+
