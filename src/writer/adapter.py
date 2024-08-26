@@ -2,6 +2,9 @@ import os
 from pydantic import BaseModel, Field, ValidationError
 import asyncpg
 from aiohttp import web
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Measurement(BaseModel):
     kind: str = Field(..., description="Kind of the measurement (e.g., temperature)")
@@ -30,7 +33,7 @@ async def init_tables(pool: asyncpg.Pool) -> None:
                 id SERIAL PRIMARY KEY,
                 kind TEXT NOT NULL,
                 time TIMESTAMPTZ NOT NULL,
-                value REAL NOT NULL
+                value DOUBLE PRECISION NOT NULL
             )
         ''')
 
@@ -40,14 +43,19 @@ async def store_measurements(
 ) -> None:
     """Store measurements into the database."""
     async with pool.acquire() as conn:
-        async with conn.transaction():
-            await conn.executemany(
-                '''
-                INSERT INTO measurements(kind, time, value)
-                VALUES($1, to_timestamp($2), $3)
-                ''', 
-                [(m.kind, m.time, m.value) for m in measurements]
-            )
+        try:
+            async with conn.transaction():
+                await conn.executemany(
+                    '''
+                    INSERT INTO measurements(kind, time, value)
+                    VALUES($1, to_timestamp($2), $3)
+                    ''', 
+                    [(m.kind, m.time, m.value) for m in measurements]
+                )
+        except Exception as e:
+            logger.error(f"Error in transaction: {e}")
+            await conn.rollback()
+            raise
 
 async def get_measurements(
     pool: asyncpg.Pool, 

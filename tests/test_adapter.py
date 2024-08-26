@@ -1,43 +1,8 @@
-import os
 import pytest
 import asyncpg
 from writer.adapter import store_measurements, get_measurements, Measurement
-from pytest_asyncio import fixture
 
-import asyncio
-
-@fixture(scope="session")
-async def db_pool():
-    db_user = os.getenv("DB_USER")
-    db_password = os.getenv("DB_PASSWORD")
-    db_host = os.getenv("DB_HOST")
-    db_port = os.getenv("DB_PORT")
-    db_name = os.getenv("DB_NAME")
-
-    pool = await asyncpg.create_pool(
-        dsn=f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}",
-        min_size=1,
-        max_size=5,
-    )
-
-    async with pool.acquire() as conn:
-        await conn.execute('''
-            CREATE TABLE IF NOT EXISTS measurements (
-                id SERIAL PRIMARY KEY,
-                kind TEXT NOT NULL,
-                time TIMESTAMPTZ NOT NULL,
-                value REAL NOT NULL
-            )
-        ''')
-
-    yield pool
-
-    async with pool.acquire() as conn:
-        await conn.execute("DROP TABLE IF EXISTS measurements")
-
-    await pool.close()
-
-@pytest.mark.asyncio
+@pytest.mark.asyncio(loop_scope="session")
 async def test_store_measurements(db_pool):
     """
     Test storing measurements into the database.
@@ -52,7 +17,8 @@ async def test_store_measurements(db_pool):
     async with db_pool.acquire() as conn:
         rows : list[asyncpg.Record]= await conn.fetch("SELECT kind, extract(epoch from time) as time, value FROM measurements")
         assert len(rows) == 2
-        row1: asyncpg.Record ; row2 : asyncpg.Record = rows
+        row1: asyncpg.Record = rows[0]
+        row2 : asyncpg.Record = rows[1]
         assert row1['kind'] == "temperature"
         assert row1['time'] == 1627848484
         assert row1['value'] == 23.5
