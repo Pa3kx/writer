@@ -6,8 +6,8 @@ from writer.routes import setup_routes
 
 import pytest
 
-@pytest_asyncio.fixture
-async def app(db_pool):
+@pytest.fixture
+def app(db_pool):
     app = web.Application()
     app["measurement_kinds"] = ["temperature", "humidity"]
     app["db_pool"] = db_pool
