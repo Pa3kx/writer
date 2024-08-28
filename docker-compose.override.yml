@@ -1,6 +1,6 @@
 services:
   app:
-    command: ["sh", "-c", "uv sync --frozen && uv run ./sensor_measurements.storage.py sensor_temperature battery_capacity"]
+    command: ["sh", "-c", "uv sync --frozen --no-dev && uv run ./sensor_measurements.storage.py sensor_temperature battery_capacity"]
   db:
     volumes:
       - postgres_data:/var/lib/postgresql/data

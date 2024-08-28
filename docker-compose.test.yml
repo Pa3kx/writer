@@ -6,7 +6,7 @@ services:
       DB_NAME: ${TEST_DB_NAME}
       DB_USER: ${TEST_DB_USER}
       DB_PASSWORD: ${TEST_DB_PASSWORD}
-    command: ["sh", "-c", "uv sync --frozen --no-dev && uv run pytest -v"]
+    command: ["sh", "-c", "uv sync --frozen && uv run pytest -v"]
   db:
     environment:
       POSTGRES_DB: ${TEST_DB_NAME}
