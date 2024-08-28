@@ -35,12 +35,12 @@ def create_app(measurement_kinds: list[str]) -> web.Application:
     }
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
+    setup_routes(app)
     setup_swagger(
         app,
-        swagger_url="/api/doc",
+        swagger_url="/api/v1/doc",
         title="Sensor Measurements API",
         description="API for storing and retrieving sensor measurements",
         api_version="0.1.0"
     )
-    setup_routes(app)
     return app

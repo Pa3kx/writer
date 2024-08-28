@@ -1,7 +1,9 @@
 from aiohttp import web
 from pydantic import ValidationError
 from writer.adapter import store_measurements, get_measurements, Measurement
+import logging
 
+logger = logging.getLogger(__name__)
 
 async def store_measurements_handler(request: web.Request) -> web.Response:
     """
@@ -41,7 +43,7 @@ async def store_measurements_handler(request: web.Request) -> web.Response:
         description: Server error
     """
     kind = request.match_info["kind"]
-    measurement_kinds = request.app["measurement_kinds"]
+    measurement_kinds = request.app["config"]["measurement_kinds"]
     if kind not in measurement_kinds:
         return web.json_response(
             status=400,
@@ -64,7 +66,8 @@ async def store_measurements_handler(request: web.Request) -> web.Response:
             status=400,
             data={"error": f"Missing attribute in measurement input data: {str(ke)}"},
         )
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Exception storing measurements: {e}")
         return web.json_response(status=500)
 
     await store_measurements(request.app["db_pool"], measurements)
@@ -113,7 +116,8 @@ async def get_measurements_handler(request: web.Request) -> web.Response:
 
     except (KeyError, ValueError):
         return web.Response(status=400)
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Exception retrieving measurements: {e}")
         return web.Response(status=500)
 
     measurements = await get_measurements(

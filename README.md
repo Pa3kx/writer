@@ -2,7 +2,9 @@
 
 **Writer** is a Python-based service that stores sensor measurements into a PostgreSQL database. It provides an HTTP REST API to write and read sensor measurements, supporting various types of measurements, each represented as a time series.
 
-🚧 **Status**: Ready & Tests passing (Hours spent: ~20).
+🚧 **Status**: Ready & Tests passing (Hours spent: ~21).
+📚 **Documentation**: Available via Swagger @ localhost:8080/api/v1/doc once service is ran
+⚙️ **Measurements Configuration**: Can be set in docker-compose.override.yml command
 
 ## ✨ Features
 
@@ -18,12 +20,21 @@
 - 🌐 [AIOHTTP](https://docs.aiohttp.org/en/stable/) - Web server
 - 🛠️ [Pydantic](https://docs.pydantic.dev/latest/) - Data validation
 - 🧪 [Pytest](https://docs.pytest.org/en/stable/) + [asyncio](https://pytest-asyncio.readthedocs.io/en/latest/) & [aiohttp](https://docs.aiohttp.org/en/v3.7.4/testing.html/)- Testing frameworks
+- 📖 [Swagger](https://swagger.io/) - Api documentation available @ localhost:8080/api/v1/doc
 
 ## 🚀 Setup
 
-1. **Clone the repository**:
+1. **Clone the repository and run containers**:
    ```bash
    git clone https://github.com/Pa3kx/writer.git
    cd writer
-   docker-compose up --build # Run showcase
-   docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build # Run tests
+
+   # Run showcase
+   # You can specify the measurement kinds in docker-compose.override.yml command
+   docker-compose up --build 
+
+   # Swagger doc - localhost:8080/api/v1/doc
+
+   # Run tests
+   docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build
+
