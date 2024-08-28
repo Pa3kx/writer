@@ -3,8 +3,9 @@ import logging
 from aiohttp import web
 from writer.routes import setup_routes
 from writer.adapter import init_db, close_db, init_tables
-
+from aiohttp_swagger import setup_swagger
 logger = logging.getLogger(__name__)
+
 
 async def on_startup(app: web.Application) -> None:
     logger.debug("Initializing database...")
@@ -12,10 +13,12 @@ async def on_startup(app: web.Application) -> None:
     await init_tables(app["db_pool"])
     logger.info("Database initialized successfully.")
 
+
 async def on_cleanup(app: web.Application) -> None:
     logger.debug("Closing database connection...")
     await close_db(app)
     logger.info("Database connection closed successfully.")
+
 
 def create_app(measurement_kinds: list[str]) -> web.Application:
     app = web.Application()
@@ -28,9 +31,16 @@ def create_app(measurement_kinds: list[str]) -> web.Application:
 
     app["config"] = {
         "database_url": f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}",
-        "measurement_kinds": measurement_kinds
+        "measurement_kinds": measurement_kinds,
     }
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
+    setup_swagger(
+        app,
+        swagger_url="/api/doc",
+        title="Sensor Measurements API",
+        description="API for storing and retrieving sensor measurements",
+        api_version="0.1.0"
+    )
     setup_routes(app)
     return app
