@@ -40,4 +40,4 @@
 
    # Swagger doc - localhost:8080/api/v1/doc
 
-   #In case tests cannot be ran due to wrong password docker-compose -v tears down showcase db from the mounted volume
+   #In case tests cannot be ran due to wrong password docker-compose down -v tears down showcase db from the mounted volume
