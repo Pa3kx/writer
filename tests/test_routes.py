@@ -10,7 +10,9 @@ import pytest
 @pytest.fixture
 def app(db_pool):
     app = web.Application()
-    app["measurement_kinds"] = ["temperature", "humidity"]
+    app["config"] = {
+    "measurement_kinds": ["temperature", "humidity"],
+    }
     app["db_pool"] = db_pool
     setup_routes(app)
     yield app
